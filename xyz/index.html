@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Universal Neon Clock</title>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #00f2fe;
+            --accent: #7000ff;
+            --glass: rgba(255, 255, 255, 0.05);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            background: #050507;
+            color: white;
+            font-family: 'Inter', sans-serif;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            overflow: hidden;
+        }
+
+        /* Animated Background */
+        .bg-gradient {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: radial-gradient(circle at 50% 50%, #1a1a2e 0%, #050507 100%);
+            z-index: -2;
+        }
+
+        .glow-orb {
+            position: absolute;
+            width: 400px; height: 400px;
+            background: var(--accent);
+            filter: blur(150px);
+            border-radius: 50%;
+            opacity: 0.2;
+            z-index: -1;
+            animation: drift 20s infinite alternate;
+        }
+
+        @keyframes drift {
+            from { transform: translate(-20%, -20%); }
+            to { transform: translate(20%, 20%); }
+        }
+
+        .container {
+            background: var(--glass);
+            backdrop-filter: blur(25px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 4rem;
+            border-radius: 50px;
+            text-align: center;
+            box-shadow: 0 40px 100px rgba(0, 0, 0, 0.8);
+            width: 90%;
+            max-width: 800px;
+        }
+
+        #location-tag {
+            font-size: 1rem;
+            letter-spacing: 0.3em;
+            text-transform: uppercase;
+            color: var(--primary);
+            margin-bottom: 1rem;
+            font-weight: 600;
+        }
+
+        .time-display {
+            font-family: 'Orbitron', sans-serif;
+            font-size: clamp(3rem, 10vw, 7rem);
+            font-weight: 700;
+            margin: 1rem 0;
+            text-shadow: 0 0 30px rgba(0, 242, 254, 0.3);
+        }
+
+        .date-display {
+            font-size: 1.2rem;
+            color: #94a3b8;
+            margin-bottom: 3rem;
+        }
+
+        /* Advanced Controls */
+        .controls {
+            display: grid;
+            grid-template-columns: 1fr auto;
+            gap: 1rem;
+            background: rgba(0, 0, 0, 0.3);
+            padding: 1.5rem;
+            border-radius: 25px;
+        }
+
+        select {
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            padding: 0.8rem;
+            border-radius: 12px;
+            font-size: 1rem;
+            width: 100%;
+            outline: none;
+        }
+
+        select option { background: #1a1a1a; }
+
+        button {
+            background: var(--primary);
+            color: #000;
+            border: none;
+            padding: 0 1.5rem;
+            border-radius: 12px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: 0.3s;
+            white-space: nowrap;
+        }
+
+        button:hover {
+            transform: scale(1.05);
+            box-shadow: 0 0 20px var(--primary);
+        }
+
+        button.active {
+            background: var(--accent);
+            color: white;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="bg-gradient"></div>
+    <div class="glow-orb"></div>
+
+    <div class="container">
+        <div id="location-tag">Detecting Location...</div>
+        <div id="clock" class="time-display">00:00:00</div>
+        <div id="date" class="date-display">...</div>
+
+        <div class="controls">
+            <select id="tz-select" onchange="updateDisplay()">
+                <option value="local">📍 My Local Time</option>
+                </select>
+
+            <button id="format-toggle" onclick="toggleFormat()">24H</button>
+        </div>
+    </div>
+
+    <script>
+        let is24Hour = true;
+        const clockEl = document.getElementById('clock');
+        const dateEl = document.getElementById('date');
+        const tagEl = document.getElementById('location-tag');
+        const selectEl = document.getElementById('tz-select');
+
+          function populateTimezones() {
+            const timezones = Intl.supportedValuesOf('timeZone');
+            timezones.forEach(tz => {
+                const option = document.createElement('option');
+                option.value = tz;
+                  const displayName = tz.replace(/_/g, ' ').split('/').pop();
+                const region = tz.split('/')[0];
+                option.textContent = `${region}: ${displayName}`;
+                selectEl.appendChild(option);
+            });
+        }
+
+        function toggleFormat() {
+            is24Hour = !is24Hour;
+            document.getElementById('format-toggle').textContent = is24Hour ? "24H" : "12H";
+            document.getElementById('format-toggle').classList.toggle('active', !is24Hour);
+            updateDisplay();
+        }
+
+        function updateDisplay() {
+            const now = new Date();
+            const selectedTz = selectEl.value;
+            
+            const timeOptions = {
+                hour: '2-digit',
+                minute: '2-digit',
+                second: '2-digit',
+                hour12: !is24Hour,
+                timeZone: selectedTz === 'local' ? undefined : selectedTz
+            };
+
+            const dateOptions = {
+                weekday: 'long',
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric',
+                timeZone: selectedTz === 'local' ? undefined : selectedTz
+            };
+
+         
+            try {
+                const timeStr = new Intl.DateTimeFormat('en-US', timeOptions).format(now);
+                clockEl.textContent = timeStr;
+                dateEl.textContent = new Intl.DateTimeFormat('en-US', dateOptions).format(now);
+                
+         
+                if(selectedTz === 'local') {
+                    tagEl.textContent = "Local Time";
+                } else {
+                    tagEl.textContent = selectedTz.split('/').pop().replace('_', ' ');
+                }
+            } catch (e) {
+                console.error("Timezone error", e);
+            }
+        }
+
+     
+        populateTimezones();
+        setInterval(updateDisplay, 1000);
+        updateDisplay();
+    </script>
+</body>
+</html>
