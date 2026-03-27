@@ -1,10 +1,5 @@
 # simple-clock
 # 🕒 Global Neon Pulse | Digital Clock 🚀
-
-<p align="center">
-  <img src="https://capsule-render.vercel.app/render?type=soft&color=auto&height=200&section=header&text=Global%20Neon%20Pulse&fontSize=80&animation=fadeIn&fontAlignY=38" alt="Header" />
-</p>
-
 <p align="center">
   <img src="https://img.shields.io/badge/Version-1.0.0-6366f1?style=for-the-badge" alt="Version" />
   <img src="https://img.shields.io/badge/Maintained%3F-Yes-a855f7?style=for-the-badge" alt="Maintained" />
