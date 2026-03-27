@@ -16,12 +16,6 @@
 
 ---
 
-## 📸 Preview
-
-![Clock Preview GIF](https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExNHY2ZTVndXUycnd2eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4JmVwPXYxX2ludGVybmFsX2dpZl9ieV9pZCZjdD1n/M9Zp1bI6ZpS7u/giphy.gif)
-*Note: Replace the link above with a screen recording of your actual project!*
-
----
 
 ## ✨ Features
 
