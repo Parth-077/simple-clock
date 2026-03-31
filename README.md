@@ -36,10 +36,6 @@
   <img src="https://img.shields.io/badge/Google%20Fonts-4285F4?style=for-the-badge&logo=google&logoColor=white" />
 </p>
 
+
 ---
 
-## 🚀 Installation & Usage
-
-1. **Clone the repository:**
-   ```bash
-   git clone [https://github.com/Parth-077/global-neon-pulse.git](https://github.com/Parth-077/global-neon-pulse.git)
